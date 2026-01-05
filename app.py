@@ -18,11 +18,12 @@ if "GROQ_API_KEY" in st.secrets:
     env_mode = "Cloud"
     api_key = st.secrets["GROQ_API_KEY"]
     
-    # Groq models with litellm prefix
+    # Current Groq models (as of Jan 2026)
+    # Note: Model availability changes - check console.groq.com for latest
     model_options = {
-        "groq/deepseek-r1-distill-llama-70b": "Thinking (DeepSeek R1 - Cloud)",
-        "groq/llama-3.3-70b-versatile": "Fast (Llama 3.3 - Cloud)",
-        "groq/mixtral-8x7b-32768": "Pro (Mixtral - Cloud)"
+        "groq/llama-3.3-70b-versatile": "Llama 3.3 70B (Recommended)",
+        "groq/llama-3.1-8b-instant": "Llama 3.1 8B (Fast)",
+        "groq/mixtral-8x7b-32768": "Mixtral 8x7B"
     }
     
     # Set the env var so litellm can find it
@@ -33,9 +34,9 @@ else:
     
     # Ollama models with litellm prefix
     model_options = {
-        "ollama/deepseek-r1:8b": "Thinking (DeepSeek R1 - Local)",
-        "ollama/llama3.2": "Fast (Llama 3.2 - Local)",
-        "ollama/mistral": "Pro (Mistral - Local)"
+        "ollama/deepseek-r1:8b": "DeepSeek R1 8B",
+        "ollama/llama3.2": "Llama 3.2",
+        "ollama/mistral": "Mistral"
     }
 
 
