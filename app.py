@@ -20,9 +20,8 @@ if "GROQ_API_KEY" in st.secrets:
     
     # Current working Groq models (Jan 2026)
     model_options = {
-        "groq/llama-3.3-70b-versatile": "Llama 3.3 70B (Best Quality)",
-        "groq/llama-3.1-8b-instant": "Llama 3.1 8B (Fastest)",
-        "groq/gemma2-9b-it": "Gemma 2 9B (Balanced)"
+        "groq/llama-3.3-70b-versatile": "Best Quality",
+        "groq/llama-3.1-8b-instant": "Fastest"
     }
     
     # Set the env var so litellm can find it
@@ -62,12 +61,7 @@ st.markdown("""
 
 # Header
 st.markdown(f'<h1>{icon("policy", "32px")} Deep Research Agent</h1>', unsafe_allow_html=True)
-st.markdown(f"### Mode: **{env_mode}**")
-
-if env_mode == "Local":
-    st.info("Running on Local Compute. Using your local Ollama instance.")
-else:
-    st.info("Running on Cloud Compute. Using Groq's cloud acceleration.")
+st.markdown("Pick a topic, hit the button, and let the AI do the digging for you.")
 
 
 # Sidebar with settings
