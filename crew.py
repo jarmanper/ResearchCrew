@@ -21,52 +21,77 @@ class ResearchCrew:
         )
     
     def run(self):
-        # Create the researcher agent - finds facts, never makes stuff up
+        # Create the researcher agent - thorough, detailed, fact-focused
         researcher = Agent(
             role='Senior Research Analyst',
-            goal=f'Find comprehensive and factual information about {self.topic}',
+            goal=f'Produce an extremely detailed and comprehensive research brief on {self.topic}',
             backstory=(
-                f"You are an incredibly skilled researcher with a deep understanding "
-                f"of {self.topic}. Even with your expertise, you remain humble and "
-                f"never make up information. You thoroughly fact-check all your findings "
-                f"before presenting them."
+                f"You are a world-class research analyst known for producing thorough, "
+                f"well-structured reports. You dig deep into topics, exploring multiple angles, "
+                f"statistics, examples, and expert opinions. You never skim the surface - you "
+                f"provide substantive analysis with specific details, data points, and concrete examples. "
+                f"You cite sources when possible and distinguish between established facts and emerging trends."
             ),
             verbose=True,
             llm=self.llm 
         )
 
-        # Create the writer agent - takes research and makes it readable
+        # Create the writer agent - transforms research into polished content
         writer = Agent(
             role='Tech Content Strategist',
-            goal=f"Summarize the researcher's findings into a clean, engaging post",
+            goal=f"Transform research into a comprehensive, well-organized article that maintains depth while being readable",
             backstory=(
-                f"You are a talented technical writer who can take complex information "
-                f"about {self.topic} and make it accessible to a broad audience. You "
-                f"never change the facts - you just present them in a compelling way."
+                f"You are an expert technical writer who excels at making complex topics accessible "
+                f"without dumbing them down. You preserve important details and nuances from research "
+                f"while organizing them into clear sections. You use specific examples, statistics, "
+                f"and concrete details - never vague generalizations. Your writing is information-dense "
+                f"but scannable, with clear headers and logical flow."
             ),
             verbose=True,
             llm=self.llm
         )
 
-        # Define what the researcher should focus on
+        # Research task - push for depth and specifics
         research_task = Task(
             description=(
-                f"Conduct a comprehensive analysis of {self.topic}. "
-                f"Identify key trends, major players, and future predictions. "
-                f"Focus on the most current and relevant data from 2025 and 2026."
+                f"Conduct an in-depth analysis of {self.topic}. Your research must include:\n"
+                f"1. Background and context - what is this and why does it matter?\n"
+                f"2. Current state - what's happening right now? Include specific examples, companies, or projects.\n"
+                f"3. Key statistics and data points - numbers, percentages, growth rates.\n"
+                f"4. Major players and stakeholders - who's involved and what are they doing?\n"
+                f"5. Challenges and controversies - what are the problems or debates?\n"
+                f"6. Future outlook - where is this heading in the next 1-3 years?\n"
+                f"7. Expert opinions or notable quotes if available.\n\n"
+                f"Be specific. Use concrete examples, not vague statements. "
+                f"Focus on information from 2024-2026."
             ),
-            expected_output="A detailed bulleted report of findings.",
+            expected_output=(
+                "A comprehensive research brief with 7+ distinct sections, "
+                "including specific examples, statistics, and detailed analysis. "
+                "At least 800 words of substantive content."
+            ),
             agent=researcher
         )
 
-        # Define what the writer should produce
+        # Writing task - maintain depth while improving readability
         writing_task = Task(
             description=(
-                f"Using the research provided, write a high-impact blog post "
-                f"about {self.topic}. The tone should be professional yet engaging. "
-                f"Use Markdown formatting with proper headers (##) and emphasis (**bold**)."
+                f"Using the research provided, create a comprehensive article about {self.topic}. "
+                f"Requirements:\n"
+                f"1. Keep ALL the specific details, statistics, and examples from the research.\n"
+                f"2. Organize into clear sections with descriptive headers (use ## for headers).\n"
+                f"3. Start with a compelling introduction that frames why this matters.\n"
+                f"4. Use bullet points for lists of items or key points.\n"
+                f"5. Bold (**) important terms, statistics, or key findings.\n"
+                f"6. End with a forward-looking conclusion.\n"
+                f"7. Maintain an authoritative but accessible tone.\n\n"
+                f"Do NOT summarize or condense - preserve the depth of the research."
             ),
-            expected_output="A markdown-formatted blog post ready for publication.",
+            expected_output=(
+                "A polished, publication-ready article in Markdown format. "
+                "Should be 800-1200 words with clear structure, preserved details, "
+                "and professional formatting."
+            ),
             agent=writer
         )
         

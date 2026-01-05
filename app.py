@@ -18,12 +18,11 @@ if "GROQ_API_KEY" in st.secrets:
     env_mode = "Cloud"
     api_key = st.secrets["GROQ_API_KEY"]
     
-    # Current Groq models (as of Jan 2026)
-    # Note: Model availability changes - check console.groq.com for latest
+    # Current working Groq models (Jan 2026)
     model_options = {
-        "groq/llama-3.3-70b-versatile": "Llama 3.3 70B (Recommended)",
-        "groq/llama-3.1-8b-instant": "Llama 3.1 8B (Fast)",
-        "groq/mixtral-8x7b-32768": "Mixtral 8x7B"
+        "groq/llama-3.3-70b-versatile": "Llama 3.3 70B (Best Quality)",
+        "groq/llama-3.1-8b-instant": "Llama 3.1 8B (Fastest)",
+        "groq/gemma2-9b-it": "Gemma 2 9B (Balanced)"
     }
     
     # Set the env var so litellm can find it
