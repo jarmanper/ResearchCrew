@@ -1,64 +1,27 @@
-"""
-Research Crew - The brain behind the operation.
+# Research Crew
+# Sets up the AI research team using CrewAI
+# One agent digs up facts, another writes them up nicely
 
-This module sets up our AI research team using CrewAI. Think of it like 
-assembling a small team of specialists: one person digs up the facts,
-another person writes them up nicely. They work together in sequence
-to turn your research topic into a polished report.
-
-Now supports both local Ollama and cloud Groq inference - the app decides
-which backend to use based on the environment.
-"""
-
-from crewai import Agent, Task, Crew, Process
-from langchain_openai import ChatOpenAI
+from crewai import Agent, Task, Crew, Process, LLM
 
 
 class ResearchCrew:
-    """
-    Orchestrates a two-agent research workflow.
+    # Runs a two-agent workflow: researcher finds info, writer makes it readable
+    # Works with both local Ollama and cloud Groq
     
-    The crew consists of a Senior Researcher (who gathers facts and data)
-    and a Technical Writer (who turns those findings into readable content).
-    Works with both local Ollama and cloud Groq - just pass the right URL and key.
-    """
-    
-    def __init__(self, topic, model_name, temperature=0.7, base_url=None, api_key=None):
-        """
-        Sets up the crew with the given research topic and model preferences.
-        
-        Args:
-            topic: What you want the agents to research (e.g., "quantum computing")
-            model_name: Which model to use - could be local Ollama or cloud Groq
-            temperature: How creative the responses should be (0.0 to 1.0)
-            base_url: Where to send requests - localhost for Ollama, Groq URL for cloud
-            api_key: API key for cloud providers, or "NA" for local Ollama
-        """
+    def __init__(self, topic, model_name, temperature=0.7, api_key=None):
         self.topic = topic
         
-        # ChatOpenAI works with any OpenAI-compatible API, including Ollama and Groq.
-        # The app.py decides which backend to use and passes us the right settings.
-        self.llm = ChatOpenAI(
+        # CrewAI's LLM class uses litellm under the hood
+        # Model names include the provider prefix (groq/, ollama/) for routing
+        self.llm = LLM(
             model=model_name,
-            base_url=base_url if base_url else "http://localhost:11434/v1",
-            api_key=api_key if api_key else "NA",
+            api_key=api_key,
             temperature=temperature
         )
     
     def run(self):
-        """
-        Kicks off the research crew and returns the final report.
-        
-        This method creates both agents, assigns them tasks, and runs the
-        whole workflow from start to finish. The researcher goes first,
-        then the writer takes those findings and creates the final output.
-        
-        Returns:
-            The finished research report as a string (markdown formatted)
-        """
-        
-        # Our researcher is the fact-finder. They're thorough and careful,
-        # never making things up - just gathering solid information.
+        # Create the researcher agent - finds facts, never makes stuff up
         researcher = Agent(
             role='Senior Research Analyst',
             goal=f'Find comprehensive and factual information about {self.topic}',
@@ -72,8 +35,7 @@ class ResearchCrew:
             llm=self.llm 
         )
 
-        # The writer takes raw research and turns it into something people
-        # actually want to read. Professional but not boring.
+        # Create the writer agent - takes research and makes it readable
         writer = Agent(
             role='Tech Content Strategist',
             goal=f"Summarize the researcher's findings into a clean, engaging post",
@@ -86,7 +48,7 @@ class ResearchCrew:
             llm=self.llm
         )
 
-        # The research task tells our researcher exactly what to dig into
+        # Define what the researcher should focus on
         research_task = Task(
             description=(
                 f"Conduct a comprehensive analysis of {self.topic}. "
@@ -97,7 +59,7 @@ class ResearchCrew:
             agent=researcher
         )
 
-        # The writing task transforms raw research into polished content
+        # Define what the writer should produce
         writing_task = Task(
             description=(
                 f"Using the research provided, write a high-impact blog post "
@@ -108,7 +70,7 @@ class ResearchCrew:
             agent=writer
         )
         
-        # Assemble the crew and run tasks in sequence - researcher first, then writer
+        # Put it all together and run in sequence
         crew = Crew(
             agents=[researcher, writer],
             tasks=[research_task, writing_task],
@@ -116,5 +78,4 @@ class ResearchCrew:
             verbose=True
         )
 
-        # Kickoff returns the final output from the last task (the blog post)
         return crew.kickoff()
